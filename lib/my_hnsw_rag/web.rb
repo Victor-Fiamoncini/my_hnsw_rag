@@ -3,7 +3,7 @@
 require 'json'
 require 'sinatra/base'
 
-module MyFaissRag
+module MyHnswRag
   class Web < Sinatra::Base
     set :views, File.expand_path('views', __dir__)
     set :public_folder, File.expand_path('public', __dir__)

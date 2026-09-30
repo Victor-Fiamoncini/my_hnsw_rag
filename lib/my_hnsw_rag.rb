@@ -8,8 +8,8 @@ if ENV.fetch('APP_ENV', 'development') != 'production'
   Dotenv.load(File.expand_path('../.env.local', __dir__))
 end
 
-require_relative 'my_faiss_rag/assistant'
-require_relative 'my_faiss_rag/web'
+require_relative 'my_hnsw_rag/assistant'
+require_relative 'my_hnsw_rag/web'
 
-module MyFaissRag
+module MyHnswRag
 end

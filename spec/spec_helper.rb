@@ -5,7 +5,7 @@ ENV['APP_ENV'] = 'test'
 ENV['OPENAI_API_KEY'] = 'test-openai-api-key'
 
 require 'webmock/rspec'
-require 'my_faiss_rag'
+require 'my_hnsw_rag'
 
 # Any real HTTP request (e.g. to OpenAI) fails the spec
 WebMock.disable_net_connect!

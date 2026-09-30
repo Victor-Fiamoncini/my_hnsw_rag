@@ -1,6 +1,6 @@
-# My FAISS RAG
+# My HNSW RAG
 
-An HR internal-policy assistant built with Sinatra, LangChain, FAISS and OpenAI.
+An HR internal-policy assistant built with Sinatra, LangChain, Hnswlib (in place of FAISS) and OpenAI.
 
 ## Requirements
 
@@ -33,7 +33,7 @@ OPENAI_API_KEY=sk-...
 
 `.env.local` is ignored by git, so don't commit your key anywhere else.
 
-Finally, put the knowledge base PDF at `data/document_sample.pdf`. The contents of `data/` are ignored by git, so the document stays on your machine. The app still starts without it, because the current step answers from a hardcoded context and doesn't read the PDF yet.
+Finally, put the knowledge base PDF at `data/document_sample.pdf`. The contents of `data/` are ignored by git, so the document stays on your machine. The app still starts without it, but questions fail until it's there. On the first question the app embeds the PDF and saves the index to `data/index.ann`. Later runs reuse that file, so delete it after changing the PDF.
 
 ## Running
 
@@ -61,8 +61,8 @@ bundle exec rubocop       # lint only
 ├── data/
 │   └── document_sample.pdf      # Knowledge base PDF (not committed, see Setup)
 ├── lib/
-│   ├── my_faiss_rag.rb          # Loads the gems, .env.local and the app
-│   └── my_faiss_rag/
+│   ├── my_hnsw_rag.rb           # Loads the gems, .env.local and the app
+│   └── my_hnsw_rag/
 │       ├── assistant.rb         # PDF loading/splitting + prompt + LLM call
 │       ├── web.rb               # Sinatra routes (GET /, POST /ask)
 │       ├── public/

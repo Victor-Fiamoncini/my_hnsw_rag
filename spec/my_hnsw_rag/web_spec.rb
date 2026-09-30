@@ -2,11 +2,11 @@
 
 require 'rack/test'
 
-RSpec.describe MyFaissRag::Web do
+RSpec.describe MyHnswRag::Web do
   include Rack::Test::Methods
 
   let(:app) { described_class }
-  let(:assistant) { instance_double(MyFaissRag::Assistant, ask: '8 horas diárias.') }
+  let(:assistant) { instance_double(MyHnswRag::Assistant, ask: '8 horas diárias.') }
 
   before { described_class.assistant = assistant }
   after { described_class.assistant = nil }
@@ -19,6 +19,34 @@ RSpec.describe MyFaissRag::Web do
     get '/'
 
     expect(last_response.body).to include('Assistente RAG')
+  end
+
+  describe 'link and button titles' do
+    def tags(name) = last_response.body.scan(/<#{name}\b[^>]*>/m)
+
+    before { get '/' }
+
+    it 'gives every link and button a non-empty title' do
+      clickables = tags('a') + tags('button')
+
+      expect(clickables).to all(match(/\stitle="[^"]+"/))
+    end
+
+    it 'has buttons to check' do
+      expect(tags('button')).not_to be_empty
+    end
+
+    it 'titles each suggestion with the question it asks' do
+      suggestions = tags('button').grep(/class="suggestion"/)
+
+      expect(suggestions).to all(satisfy do |tag|
+        tag[/title="([^"]*)"/, 1] == "Perguntar: #{tag[/data-question="([^"]*)"/, 1]}"
+      end)
+    end
+
+    it 'titles the send button' do
+      expect(tags('button').grep(/class="send"/)).to contain_exactly(a_string_including('title="Enviar"'))
+    end
   end
 
   it 'serves the stylesheet' do

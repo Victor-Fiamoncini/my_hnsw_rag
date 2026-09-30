@@ -10,14 +10,14 @@ It is a Ruby port of a Python/Streamlit project at `~/projects/my_simple_rag` an
 
 ### Current step
 
-- `Assistant.pdf_text` / `Assistant.split_pdf_text` load and chunk the PDF (1000 chars, 200 overlap) but are **not used yet**.
-- `Assistant#create_context` returns a **hardcoded** paragraph; there are no embeddings and no vector store.
-- Next step (not started): embed the chunks and retrieve with FAISS. langchainrb has no FAISS adapter, so use the `faiss` gem directly. It compiles from source (~3 min) and needs BLAS, LAPACK and OpenMP installed.
+- `Assistant.pdf_text` / `Assistant.split_pdf_text` load and chunk the PDF (1000 chars, 200 overlap).
+- `Assistant.create_vector_database` embeds the chunks with OpenAI into a `Langchain::Vectorsearch::Hnswlib` store saved at `data/index.ann`. langchainrb has no FAISS adapter, and Hnswlib is the in-process equivalent. It embeds only when the file doesn't exist yet; otherwise it loads the saved index. Delete `data/index.ann` after changing the PDF.
+- `Assistant#create_context` retrieves the `CONTEXT_CHUNKS` (4) nearest chunks. Hnswlib returns only ids, which are the chunk positions, so the assistant keeps the chunks array to look up their text. The PDF, chunks and store are built lazily on the first question.
 
 ## Stack
 
 - Ruby 4.0.2 (`mise.toml`), Bundler
-- langchainrb (`Langchain::LLM::OpenAI`, `Langchain::Loader`, `Langchain::Chunker::RecursiveText`) + ruby-openai + pdf-reader
+- langchainrb (`Langchain::LLM::OpenAI`, `Langchain::Loader`, `Langchain::Chunker::RecursiveText`, `Langchain::Vectorsearch::Hnswlib`) + ruby-openai + pdf-reader + hnswlib
 - Sinatra 4 on Puma, started with `rackup` via `config.ru`
 - RSpec + rack-test, RuboCop + rubocop-rspec
 - dotenv for local secrets
@@ -37,11 +37,12 @@ bundle exec rubocop -a      # lint and autocorrect
 ```
 config.ru                        # Rack entry point
 data/document_sample.pdf         # knowledge base (git-ignored, see Gotchas)
-lib/my_faiss_rag.rb              # Bundler.require, dotenv, requires the app
-lib/my_faiss_rag/assistant.rb    # PDF helpers, prompt, context, LLM call
-lib/my_faiss_rag/web.rb          # Sinatra routes: GET /, POST /ask
-lib/my_faiss_rag/views/index.erb # page markup only
-lib/my_faiss_rag/public/         # styles.css, app.js, favicon.svg/.ico, apple-touch-icon.png (served from /)
+data/index.ann                   # Hnswlib index, created on the first question (git-ignored)
+lib/my_hnsw_rag.rb               # Bundler.require, dotenv, requires the app
+lib/my_hnsw_rag/assistant.rb     # PDF helpers, prompt, context, LLM call
+lib/my_hnsw_rag/web.rb           # Sinatra routes: GET /, POST /ask
+lib/my_hnsw_rag/views/index.erb  # page markup only
+lib/my_hnsw_rag/public/          # styles.css, app.js, favicon.svg/.ico, apple-touch-icon.png (served from /)
 spec/                            # mirrors lib/; test_isolation_spec.rb checks the guards below
 ```
 
@@ -65,7 +66,7 @@ spec/                            # mirrors lib/; test_isolation_spec.rb checks t
 - **Theme:** Catppuccin, Latte for light mode and Mocha for dark mode, switched by `prefers-color-scheme`. Palette colors live only in the `--ctp-*` variables at the top of `styles.css`; rules use the semantic variables (`--bg`, `--fg`, `--accent`, `--error`, ...). Don't hardcode hex values elsewhere, and keep text contrast at 4.5:1 or better in both flavors.
 - **Favicon:** `public/favicon.svg` is the source (Mocha base + mauve "R"). After editing it, regenerate the others: `rsvg-convert -w 180 favicon.svg -o apple-touch-icon.png` and a 16+32px `favicon.ico` with `magick`.
 - **Spacing:** use the `--space-*` scale (4px steps) for all padding, margin and gap. No raw pixel values there.
-- **Tests:** unit specs mock every dependency outside the class under test: the LLM, `Langchain::Loader`, PDF data and chunks, and the assistant in web specs. No real files, network or API clients. Use verifying doubles (`instance_double`); `verify_doubled_constant_names` is on, so doubling a class that doesn't exist fails. Specs never call OpenAI. Inject a double with `Assistant.new(llm:)` and set `MyFaissRag::Web.assistant = ...` in web specs (reset it to `nil` after). `spec_helper.rb` enforces this: WebMock blocks all real HTTP (a leaked call raises `WebMock::NetConnectNotAllowedError`), and a fake `OPENAI_API_KEY` is set before dotenv runs so the real key is never loaded. Don't loosen either; stub requests with WebMock if a spec needs HTTP.
+- **Tests:** unit specs mock every dependency outside the class under test: the LLM, `Langchain::Loader`, PDF data and chunks, and the assistant in web specs. No real files, network or API clients. Use verifying doubles (`instance_double`); `verify_doubled_constant_names` is on, so doubling a class that doesn't exist fails. Specs never call OpenAI. Inject doubles with `Assistant.new(llm:, chunks:, vector_store:)` and set `MyHnswRag::Web.assistant = ...` in web specs (reset it to `nil` after). `spec_helper.rb` enforces this: WebMock blocks all real HTTP (a leaked call raises `WebMock::NetConnectNotAllowedError`), and a fake `OPENAI_API_KEY` is set before dotenv runs so the real key is never loaded. Don't loosen either; stub requests with WebMock if a spec needs HTTP.
 
 ## Gotchas
 

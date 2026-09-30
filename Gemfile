@@ -13,6 +13,7 @@ gem 'langchainrb', '~> 0.19.5'
 gem 'logger', '~> 1.7'
 
 gem 'dotenv', '~> 3.2', groups: %i[development test]
+gem 'hnswlib', '~> 0.8.1'
 gem 'pdf-reader', '~> 2.15'
 gem 'ruby-openai', '~> 8.0'
 
