@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assistente RAG — Políticas Internas RH</title>
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <img class="logo" src="/favicon.svg" alt="" width="36" height="36">
+      <div>
+        <h1>Assistente RAG</h1>
+        <p class="subtitle">Políticas internas de RH</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="welcome" class="welcome">
+      <h2>Olá! Como posso ajudar?</h2>
+      <p>Pergunte qualquer coisa sobre as políticas da empresa. Algumas sugestões:</p>
+
+      <div class="suggestions">
+        <button type="button" class="suggestion" data-question="Qual é a jornada de trabalho padrão?">
+          Qual é a jornada de trabalho padrão?
+        </button>
+        <button type="button" class="suggestion" data-question="Qual é o horário de almoço?">
+          Qual é o horário de almoço?
+        </button>
+        <button type="button" class="suggestion" data-question="Existe flexibilidade de horário?">
+          Existe flexibilidade de horário?
+        </button>
+      </div>
+    </section>
+
+    <div id="messages" aria-live="polite"></div>
+  </main>
+
+  <form id="chat">
+    <div class="input-row">
+      <input
+        id="question"
+        autocomplete="off"
+        placeholder="Pergunte sobre as políticas da empresa..."
+        aria-label="Sua pergunta"
+        autofocus
+      />
+
+      <button type="submit" class="send" title="Enviar" aria-label="Enviar">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="disclaimer">As respostas são geradas por IA e podem conter erros.</p>
+  </form>
+</body>
+</html>

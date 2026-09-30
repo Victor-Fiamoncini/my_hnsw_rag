@@ -1,0 +1,14 @@
+/.bundle/
+/vendor/bundle/
+/coverage/
+/tmp/
+.rspec_status
+.DS_Store
+.env.local
+
+# Knowledge base documents (keep the folder, not its contents)
+/data/*
+!/data/.gitkeep
+
+# JetBrains IDE (RubyMine) settings
+/.idea/
