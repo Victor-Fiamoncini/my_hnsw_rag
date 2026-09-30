@@ -39,7 +39,7 @@ config.ru                        # Rack entry point
 data/document_sample.pdf         # knowledge base (git-ignored, see Gotchas)
 data/index.ann                   # Hnswlib index, created on the first question (git-ignored)
 lib/my_hnsw_rag.rb               # Bundler.require, dotenv, requires the app
-lib/my_hnsw_rag/assistant.rb     # PDF helpers, prompt, context, LLM call
+lib/my_hnsw_rag/assistant.rb     # PDF helpers, Hnswlib vector store, retrieval, prompt, LLM call
 lib/my_hnsw_rag/web.rb           # Sinatra routes: GET /, POST /ask
 lib/my_hnsw_rag/views/index.erb  # page markup only
 lib/my_hnsw_rag/public/          # styles.css, app.js, favicon.svg/.ico, apple-touch-icon.png (served from /)

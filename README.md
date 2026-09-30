@@ -59,11 +59,12 @@ bundle exec rubocop       # lint only
 .
 ├── config.ru                    # Rack entry point (used by rackup)
 ├── data/
-│   └── document_sample.pdf      # Knowledge base PDF (not committed, see Setup)
+│   ├── document_sample.pdf      # Knowledge base PDF (not committed, see Setup)
+│   └── index.ann                # Hnswlib vector index, created on the first question (not committed)
 ├── lib/
 │   ├── my_hnsw_rag.rb           # Loads the gems, .env.local and the app
 │   └── my_hnsw_rag/
-│       ├── assistant.rb         # PDF loading/splitting + prompt + LLM call
+│       ├── assistant.rb         # PDF loading/splitting + vector store + retrieval + prompt + LLM call
 │       ├── web.rb               # Sinatra routes (GET /, POST /ask)
 │       ├── public/
 │       │   ├── app.js           # Chat UI behavior
