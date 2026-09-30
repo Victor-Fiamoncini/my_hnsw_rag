@@ -6,8 +6,6 @@ Guidance for AI coding agents working in this repository. Setup and run instruct
 
 An HR internal-policy chat assistant (RAG) in Ruby: a Sinatra app serves a chat page, and each question is sent to OpenAI `gpt-4o-mini` with context from the company policy PDF (`data/document_sample.pdf`).
 
-It is a Ruby port of a Python/Streamlit project at `~/projects/my_simple_rag` and is kept **at the same step** as that project. Don't build ahead of it unless asked.
-
 ### Current step
 
 - `Assistant.pdf_text` / `Assistant.split_pdf_text` load and chunk the PDF (1000 chars, 200 overlap).
