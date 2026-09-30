@@ -78,6 +78,25 @@ bundle exec rubocop       # lint only
 └── Gemfile                      # Ruby dependencies
 ```
 
+## Limitations and possible improvements
+
+The assistant uses plain top-k RAG: each question gets only the 4 chunks most similar to it (`CONTEXT_CHUNKS`), and each question is answered on its own.
+
+| Works well | Struggles |
+|---|---|
+| The answer is in one or two passages | The answer needs the whole document (e.g. "how many chapters?", "summarize the PDF") |
+| The question uses words similar to the text | Synonyms, negation, exact codes |
+| Standalone questions | Follow-ups that need earlier messages |
+| Large collections (too big for one prompt) | Small documents, where sending everything is simpler |
+
+Improvements to try, each targeting one of the limitations above:
+
+- [ ] **Hybrid search:** combine vector search with keyword search (BM25) for exact terms, codes and numbers.
+- [ ] **Reranking:** retrieve more candidates (e.g. 20), then keep the best 4 for relevance.
+- [ ] **Chat history:** send earlier messages so follow-up questions keep their subject.
+- [ ] **Summaries or routing:** answer questions about the whole document from a summary made at indexing time, or route them away from top-k search.
+- [ ] **Contextual chunk headers:** prefix each chunk with its section, so context lost when splitting is restored. Detect sections generically, not from one PDF's wording.
+
 ## Front end
 
 The chat page is plain HTML, CSS and JavaScript: no framework, no bundler and no build step.
