@@ -11,7 +11,7 @@ It is a Ruby port of a Python/Streamlit project at `~/projects/my_simple_rag` an
 ### Current step
 
 - `Assistant.pdf_text` / `Assistant.split_pdf_text` load and chunk the PDF (1000 chars, 200 overlap).
-- `Assistant.create_vector_database` embeds the chunks with OpenAI into a `Langchain::Vectorsearch::Hnswlib` store saved at `data/index.ann`. langchainrb has no FAISS adapter, and Hnswlib is the in-process equivalent. It embeds only when the file doesn't exist yet; otherwise it loads the saved index. Delete `data/index.ann` after changing the PDF.
+- `Assistant.create_vector_database` embeds the chunks with OpenAI into a `Langchain::Vectorsearch::Hnswlib` store saved at `data/index.ann`. It embeds only when the file doesn't exist yet; otherwise it loads the saved index. Delete `data/index.ann` after changing the PDF.
 - `Assistant#create_context` retrieves the `CONTEXT_CHUNKS` (4) nearest chunks. Hnswlib returns only ids, which are the chunk positions, so the assistant keeps the chunks array to look up their text. The PDF, chunks and store are built lazily on the first question.
 
 ## Stack

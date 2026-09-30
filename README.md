@@ -1,6 +1,6 @@
 # My HNSW RAG
 
-An HR internal-policy assistant built with Sinatra, LangChain, Hnswlib (in place of FAISS) and OpenAI.
+An HR internal-policy assistant built with Sinatra, LangChain, Hnswlib and OpenAI.
 
 ## Requirements
 
